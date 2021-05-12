@@ -89,29 +89,21 @@ const Test = () => {
 
   //Feeds with useEffect and is used by map
   const [data, setData] = useState([]);
-  //Holds data for new post 
-  const [post, setPost] = useState({
+ 
+  //Holds data for new post and for post to edit
+  const [selectedPost, setSelectedPost] = useState({
     category_id: "",
     title: "",
     body: "",
     author: "",
     created_at: "",
   });
-  const [postToAdd, setPostToAdd] = useState({
-    category_id: "",
-    title: "",
-    body: "",
-    author: "",
-    created_at: "",
-  });
-  // const [selectedPost, setSelectedPost] = useState({
-  //   category_id: "",
-  //   title: "",
-  //   body: "",
-  //   author: "",
-  //   created_at: "",
-  // });
+  
   const [modalInsert, setModalInsert] = useState(false);
+
+  const toggleModalInsert = () => {
+    setModalInsert(!modalInsert);
+  };
 
   const getPosts = () => {
     fetch(baseUrl)
@@ -121,16 +113,15 @@ const Test = () => {
   };
 
   useEffect(() => {
-
     getPosts();
-
   }, []);
 
   const petitionPost = () => {
+
     const requestInit = {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(postToAdd)
+      body: JSON.stringify(selectedPost)
     }
 
     fetch(baseUrl, requestInit)
@@ -138,14 +129,13 @@ const Test = () => {
     .then((res) => console.log(res));
 
     toggleModalInsert();
-    getPosts();
-    console.log('PetitionPost executed');
+
   }
 
   //Feeds the body for the post request
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setPostToAdd((prevState) => ({
+    setSelectedPost((prevState) => ({
       ...prevState,
       [name]: value,
     }));
@@ -159,10 +149,6 @@ const Test = () => {
   //   });
   // };
 
-
-  const toggleModalInsert = () => {
-    setModalInsert(!modalInsert);
-  };
 
   // const validateInsert = () => {
   //   let temp = {};
@@ -256,22 +242,22 @@ const Test = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {data.map((data) => (
-                <StyledTableRow key={data.id}>
+              {data.map((post) => (
+                <StyledTableRow key={post.id}>
                   <StyledTableCell style={{ width: "2%" }}>
-                    {data.category_id}
+                    {post.category_id}
                   </StyledTableCell>
                   <StyledTableCell style={{ width: "10%" }}>
-                    {data.title}
+                    {post.title}
                   </StyledTableCell>
                   <StyledTableCell style={{ width: "55%" }}>
-                    {data.body}
+                    {post.body}
                   </StyledTableCell>
                   <StyledTableCell style={{ width: "13%" }}>
-                    {data.author}
+                    {post.author}
                   </StyledTableCell>
                   <StyledTableCell style={{ width: "10%" }}>
-                    {data.created_at}
+                    {post.created_at}
                   </StyledTableCell>
                   <StyledTableCell style={{ width: "10%" }}>
                     <Edit
